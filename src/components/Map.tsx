@@ -2,12 +2,12 @@ import * as React from "react";
 import { useState } from "react";
 import ReactMapGL, { Layer, Source } from "react-map-gl";
 import { LayerProps } from "react-map-gl";
-import geoData from "../constants";
-import SearchBar from "./SearchBar";
 
-const coordinates = [
-  geoData.polygon[0].split("_").map((set) => set.split(",").map(Number)),
-];
+function parsePolygon(polygons: string[] = []) {
+  return polygons.map((v) =>
+    v.split("_").map((set) => set.split(",").map(Number))
+  );
+}
 
 const layerStyle = {
   type: "fill" as LayerProps["type"],
@@ -18,7 +18,7 @@ const layerStyle = {
   },
 };
 
-function Map() {
+function Map({ polygons }: { polygons?: any }) {
   const [viewport, setViewport] = useState({
     width: "100vw",
     height: "100vh",
@@ -27,28 +27,29 @@ function Map() {
     zoom: 10,
   });
 
+  const coordinates = React.useMemo(() => {
+    return parsePolygon(polygons);
+  }, [polygons]);
+
   return (
-    <>
-      <ReactMapGL
-        {...viewport}
-        onViewportChange={(nextViewport: any) => setViewport(nextViewport)}
+    <ReactMapGL
+      {...viewport}
+      onViewportChange={(nextViewport: any) => setViewport(nextViewport)}
+    >
+      <Source
+        type="geojson"
+        data={{
+          type: "Feature",
+          properties: {},
+          geometry: {
+            type: "Polygon",
+            coordinates,
+          },
+        }}
       >
-        <Source
-          type="geojson"
-          data={{
-            type: "Feature",
-            properties: {},
-            geometry: {
-              type: "Polygon",
-              coordinates,
-            },
-          }}
-        >
-          <Layer {...layerStyle} />
-        </Source>
-      </ReactMapGL>
-      <SearchBar />
-    </>
+        <Layer {...layerStyle} />
+      </Source>
+    </ReactMapGL>
   );
 }
 

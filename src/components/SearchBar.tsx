@@ -1,7 +1,11 @@
 import { Box, Button, TextField } from "@material-ui/core";
 import { Search } from "@material-ui/icons";
 
-const SearchBar = () => {
+interface Props {
+  onLocationSettingClick: () => void;
+}
+
+const SearchBar = ({ onLocationSettingClick }: Props) => {
   return (
     <Box
       sx={{
@@ -12,6 +16,8 @@ const SearchBar = () => {
         left: 0,
         right: 0,
         pt: 2,
+        display: "flex",
+        justifyContent: "center",
       }}
     >
       <TextField
@@ -20,13 +26,15 @@ const SearchBar = () => {
           width: 400,
           background: "white",
           mr: "10px",
+          borderRadius: "5px",
+          boxShadow: (theme) => theme.shadows[1],
         }}
         variant="filled"
         placeholder="hmm.."
         InputProps={{
           sx: {
             "& .MuiInputBase-input.MuiFilledInput-input": {
-              paddingTop: "14px",
+              paddingTop: "11px",
             },
           },
           endAdornment: <Search />,
@@ -34,6 +42,7 @@ const SearchBar = () => {
         }}
       ></TextField>
       <Button
+        onClick={onLocationSettingClick}
         sx={{
           backgroundColor: "white",
           color: "black",
