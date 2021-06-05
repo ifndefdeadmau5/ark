@@ -124,7 +124,7 @@ const LocationSettingsDialog = ({ onClose, onSubmit }: Props) => {
         지역 설정
       </DialogTitle>
       <DialogContent sx={{ p: 0 }} dividers>
-        <Box display="flex" justifyContent="space-between" px={2.75} py={2.5}>
+        <Box display="flex" justifyContent="space-between" px={2.75} py={1.75}>
           <TextField
             margin="none"
             variant="standard"
