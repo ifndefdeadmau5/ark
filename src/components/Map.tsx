@@ -18,7 +18,7 @@ const layerStyle = {
   },
 };
 
-function Map({ polygons }: { polygons?: any }) {
+function Map({ polygons }: { polygons?: string[] }) {
   const [viewport, setViewport] = useState({
     width: "100vw",
     height: "100vh",
