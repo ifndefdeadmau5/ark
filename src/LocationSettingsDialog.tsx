@@ -11,12 +11,7 @@ import {
   TextField,
   Typography,
 } from "@material-ui/core";
-import {
-  Check,
-  CheckBoxOutlineBlankOutlined,
-  CheckBoxOutlined,
-  Close,
-} from "@material-ui/icons";
+import { CheckBoxOutlined, Close } from "@material-ui/icons";
 import React, { useEffect, useRef, useState } from "react";
 import Button from "./components/Button";
 
