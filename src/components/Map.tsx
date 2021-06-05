@@ -1,7 +1,13 @@
 import * as React from "react";
 import { useState } from "react";
 import ReactMapGL, { Layer, Source } from "react-map-gl";
+import mapboxgl from "mapbox-gl"; // This is a dependency of react-map-gl even if you didn't explicitly install it
 import { LayerProps } from "react-map-gl";
+
+// @ts-ignore
+mapboxgl.workerClass =
+  // eslint-disable-next-line import/no-webpack-loader-syntax
+  require("worker-loader!mapbox-gl/dist/mapbox-gl-csp-worker").default;
 
 function parsePolygon(polygons: string[] = []) {
   return polygons.map((v) =>
