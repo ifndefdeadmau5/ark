@@ -10,17 +10,25 @@ mapboxgl.workerClass =
   require("worker-loader!mapbox-gl/dist/mapbox-gl-csp-worker").default;
 
 function parsePolygon(polygons: string[] = []) {
-  return polygons.map((v) =>
-    v.split("_").map((set) => set.split(",").map(Number))
-  );
+  return polygons.map((v) => [
+    v.split("_").map((set) => set.split(",").map(Number)),
+  ]);
 }
 
-const layerStyle = {
+const layerStyleFill = {
   type: "fill" as LayerProps["type"],
   layout: {},
   paint: {
-    "fill-color": "#0080ff", // blue color fill
-    "fill-opacity": 0.5,
+    "fill-color": "#008D9B",
+    "fill-opacity": 0.1,
+  },
+};
+
+const layerStyleLine = {
+  type: "line" as LayerProps["type"],
+  layout: {},
+  paint: {
+    "line-color": "#008D9B",
   },
 };
 
@@ -48,12 +56,13 @@ function Map({ polygons }: { polygons?: string[] }) {
           type: "Feature",
           properties: {},
           geometry: {
-            type: "Polygon",
+            type: "MultiPolygon",
             coordinates,
           },
         }}
       >
-        <Layer {...layerStyle} />
+        <Layer {...layerStyleFill} />
+        <Layer {...layerStyleLine} />
       </Source>
     </ReactMapGL>
   );

@@ -7,6 +7,7 @@ import {
   FormControlLabel,
   Grid,
   IconButton,
+  LinearProgress,
   MenuItem,
   TextField,
   Typography,
@@ -51,12 +52,15 @@ const LocationSettingsDialog = ({ onClose, onSubmit }: Props) => {
   const [cityName, setCityName] = useState<string | null>(null);
   const [cities, setCities] = useState<City[]>([]);
   const [selection, setSelection] = useState<City[]>([]);
+  const [loading, setLoading] = useState(false);
   const jsonRef = useRef<{ maps: City[] }>();
   const selectionCodes = selection.map((v) => v.code);
 
   useEffect(() => {
+    setLoading(true);
     import("./constants/country.json").then((module) => {
       jsonRef.current = module.default;
+      setLoading(false);
     });
   }, []);
 
@@ -121,110 +125,123 @@ const LocationSettingsDialog = ({ onClose, onSubmit }: Props) => {
           pl: "21px",
         }}
       >
-        지역 설정
+        {loading ? "지역 정보를 로딩중입니다..." : "지역 설정"}
       </DialogTitle>
       <DialogContent sx={{ p: 0 }} dividers>
-        <Box display="flex" justifyContent="space-between" px={2.75} py={1.75}>
-          <TextField
-            margin="none"
-            variant="standard"
-            sx={{
-              minWidth: 160,
-              "& .MuiSelect-select.MuiInputBase-input.MuiInput-input": {
-                fontSize: 14,
-              },
-            }}
-            value={cityName}
-            onChange={handleCitySelect}
-            select
-          >
-            {cityNames.map((name) => (
-              <MenuItem value={name}>{name}</MenuItem>
-            ))}
-          </TextField>
-          <Box display="flex">
-            <Button
-              onClick={selectAll}
-              sx={{ mr: 1.25, width: 120 }}
-              variant="contained"
-              disableElevation
-            >
-              전체선택
-            </Button>
-            <Button
-              variant="outlined"
-              onClick={unselectAll}
-              sx={{ width: 120 }}
-              disabled={selection.length === 0}
-            >
-              선택해제
-            </Button>
-          </Box>
-        </Box>
+        {loading && <LinearProgress />}
         <Box
           sx={{
-            borderTop: (theme) => `1px solid ${theme.palette.divider}`,
-            display: "flex",
-            justifyContent: "space-between",
-            p: (theme) => theme.spacing(1.25, 2.5),
-            backgroundColor: "#f4f4f4",
-            opacity: 0.66,
-            fontSize: 14,
+            opacity: loading ? 0.3 : 1,
+            pointerEvents: loading ? "none" : "auto",
           }}
         >
-          {cityName ?? "지역을 선택해주세요"}
-        </Box>
-        <Grid
-          container
-          spacing={0}
-          sx={{
-            borderTop: "1px solid",
-            borderColor: (theme) => theme.palette.divider,
-            marginBottom: "-1px",
-          }}
-        >
-          {cities &&
-            cities.map(({ code, country }: City) => (
-              <Grid
-                item
-                xs={4}
-                sx={{
-                  backgroundColor: "white",
-                  borderRight: "1px solid",
-                  "&:nth-child(3n)": {
-                    borderRight: "0",
-                  },
-                  borderBottom: "1px solid",
-                  borderColor: (theme) => theme.palette.divider,
-                  px: 2,
-                }}
+          <Box
+            display="flex"
+            justifyContent="space-between"
+            px={2.75}
+            py={1.75}
+          >
+            <TextField
+              margin="none"
+              variant="standard"
+              sx={{
+                minWidth: 160,
+                "& .MuiSelect-select.MuiInputBase-input.MuiInput-input": {
+                  fontSize: 14,
+                },
+              }}
+              value={cityName}
+              onChange={handleCitySelect}
+              select
+            >
+              {cityNames.map((name) => (
+                <MenuItem value={name}>{name}</MenuItem>
+              ))}
+            </TextField>
+            <Box display="flex">
+              <Button
+                onClick={selectAll}
+                sx={{ mr: 1.25, width: 120 }}
+                variant="contained"
+                disableElevation
               >
-                <FormControlLabel
+                전체선택
+              </Button>
+              <Button
+                variant="outlined"
+                onClick={unselectAll}
+                sx={{ width: 120 }}
+                disabled={selection.length === 0}
+              >
+                선택해제
+              </Button>
+            </Box>
+          </Box>
+          <Box
+            sx={{
+              borderTop: (theme) => `1px solid ${theme.palette.divider}`,
+              display: "flex",
+              justifyContent: "space-between",
+              p: (theme) => theme.spacing(1.25, 2.5),
+              backgroundColor: "#f4f4f4",
+              opacity: 0.66,
+              fontSize: 14,
+            }}
+          >
+            {cityName ?? "지역을 선택해주세요"}
+          </Box>
+          <Grid
+            container
+            spacing={0}
+            sx={{
+              borderTop: "1px solid",
+              borderColor: (theme) => theme.palette.divider,
+              marginBottom: "-1px",
+            }}
+          >
+            {cities &&
+              cities.map(({ code, country }: City) => (
+                <Grid
+                  item
+                  xs={4}
                   sx={{
-                    "& .MuiFormControlLabel-label": { fontSize: 14 },
+                    backgroundColor: "white",
+                    borderRight: "1px solid",
+                    "&:nth-child(3n)": {
+                      borderRight: "0",
+                    },
+                    borderBottom: "1px solid",
+                    borderColor: (theme) => theme.palette.divider,
+                    px: 2,
                   }}
-                  control={
-                    <Checkbox
-                      sx={{
-                        "& .MuiSvgIcon-root": {
-                          fill: (theme) =>
-                            selectionCodes.includes(code)
-                              ? theme.palette.primary.main
-                              : "#999999",
-                        },
-                      }}
-                      checkedIcon={<CheckBoxOutlined />}
-                      checked={selectionCodes.includes(code)}
-                      onChange={handleSelectionChange}
-                      name={code}
-                      color="primary"
-                    />
-                  }
-                  label={country}
-                />
-              </Grid>
-            ))}
-        </Grid>
+                >
+                  <FormControlLabel
+                    sx={{
+                      "& .MuiFormControlLabel-label": { fontSize: 14 },
+                    }}
+                    control={
+                      <Checkbox
+                        sx={{
+                          "& .MuiSvgIcon-root": {
+                            fill: (theme) =>
+                              selectionCodes.includes(code)
+                                ? theme.palette.primary.main
+                                : "#999999",
+                          },
+                        }}
+                        checkedIcon={<CheckBoxOutlined />}
+                        checked={selectionCodes.includes(code)}
+                        onChange={handleSelectionChange}
+                        name={code}
+                        color="primary"
+                      />
+                    }
+                    label={country}
+                  />
+                </Grid>
+              ))}
+          </Grid>
+        </Box>
         {selection.length > 0 && (
           <>
             <Box
