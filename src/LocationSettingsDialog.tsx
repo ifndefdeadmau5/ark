@@ -49,7 +49,7 @@ type City = {
 };
 
 const LocationSettingsDialog = ({ onClose, onSubmit }: Props) => {
-  const [cityName, setCityName] = useState<string | null>(null);
+  const [cityName, setCityName] = useState<string | null>("");
   const [cities, setCities] = useState<City[]>([]);
   const [selection, setSelection] = useState<City[]>([]);
   const [loading, setLoading] = useState(false);
@@ -155,7 +155,9 @@ const LocationSettingsDialog = ({ onClose, onSubmit }: Props) => {
               select
             >
               {cityNames.map((name) => (
-                <MenuItem value={name}>{name}</MenuItem>
+                <MenuItem key={name} value={name}>
+                  {name}
+                </MenuItem>
               ))}
             </TextField>
             <Box display="flex">
@@ -202,12 +204,13 @@ const LocationSettingsDialog = ({ onClose, onSubmit }: Props) => {
             {cities &&
               cities.map(({ code, country }: City) => (
                 <Grid
+                  key={code}
                   item
                   xs={4}
                   sx={{
                     backgroundColor: "white",
                     borderRight: "1px solid",
-                    "&:nth-child(3n)": {
+                    "&:nth-of-type(3n)": {
                       borderRight: "0",
                     },
                     borderBottom: "1px solid",
@@ -266,6 +269,7 @@ const LocationSettingsDialog = ({ onClose, onSubmit }: Props) => {
               {selection &&
                 selection.map(({ country, code }) => (
                   <Grid
+                    key={code}
                     item
                     xs={4}
                     sx={{
@@ -276,7 +280,7 @@ const LocationSettingsDialog = ({ onClose, onSubmit }: Props) => {
                       display: "flex",
                       justifyContent: "space-between",
                       alignItems: "center",
-                      "&:nth-child(3n)": {
+                      "&:nth-of-type(3n)": {
                         borderRight: "0",
                       },
                       fontSize: 14,
